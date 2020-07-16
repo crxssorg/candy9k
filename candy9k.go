@@ -140,7 +140,7 @@ func powerInt64(base int64, exponent int64) int64 {
 }
 func writeMessageHash(s *discordgo.Session, m *discordgo.Message) {
 	hashedMessage := getFNV128Hash(m.Content)
-	f, err := os.OpenFile("./db/hashes", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile("./db/hashes", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0740)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -231,13 +231,13 @@ func init() {
 	}
 
 	if _, err := os.Stat("db"); os.IsNotExist(err) {
-		err = os.MkdirAll("db", 0755)
+		err = os.MkdirAll("db", 0740)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 	if _, err := os.Stat("db/punishmentsp"); os.IsNotExist(err) {
-		err = os.MkdirAll("db/punishments", 0755)
+		err = os.MkdirAll("db/punishments", 0740)
 		if err != nil {
 			log.Fatal(err)
 		}
