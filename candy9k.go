@@ -73,6 +73,7 @@ func fetchBanTime(userID string) int64 {
 	timeWritten, _ := strconv.ParseInt(lines[1], 10, 64)
 	return timeWritten
 }
+
 func punishUser(s *discordgo.Session, msg *discordgo.Message) {
 	if _, err := os.Stat("./db/punishments/" + msg.Author.ID); os.IsNotExist(err) {
 		f, err := os.OpenFile("./db/punishments/"+msg.Author.ID, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
