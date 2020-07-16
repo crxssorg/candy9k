@@ -1,0 +1,11 @@
+candy9k -- a small r9k bot for Discord (and soon Matrix)
+
+We used this bot for our r9k channel. As of now we aren't using it,
+but in the meantime I'm going to work on making it interoperable. If you want to
+use it you can either use "go run candy9k.go" to compile and run it, or use
+"go build candy9k.go" to build it into a binary.
+
+Configuration is simple, just make a file called config.json and use
+config.example.json as a template. 
+
+Contributions are welcome. 

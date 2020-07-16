@@ -1,0 +1,10 @@
+{
+	"basetime": 2
+	"discord": {
+		"token": "",
+		"targetChannel": "",
+		"targetGuild": ""
+		"muteRoleID": ""
+	}
+
+}
