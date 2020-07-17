@@ -237,7 +237,7 @@ func init() {
 			log.Fatal(err)
 		}
 	}
-	if _, err := os.Stat("db/punishmentsp"); os.IsNotExist(err) {
+	if _, err := os.Stat("db/punishments"); os.IsNotExist(err) {
 		err = os.MkdirAll("db/punishments", 0740)
 		if err != nil {
 			log.Fatal(err)
