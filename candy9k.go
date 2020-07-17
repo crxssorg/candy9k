@@ -257,7 +257,6 @@ func main() {
 	err = dg.Open()
 	if err != nil {
 		log.Fatal(err)
-		return
 	}
 
 	sc := make(chan os.Signal, 1)
