@@ -1,9 +1,9 @@
 {
-	"basetime": 2
+	"basetime": 2,
 	"discord": {
 		"token": "",
 		"targetChannel": "",
-		"targetGuild": ""
+		"targetGuild": "",
 		"muteRoleID": ""
 	}
 
