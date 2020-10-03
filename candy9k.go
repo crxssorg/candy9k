@@ -65,12 +65,17 @@ func fetchBanTime(userID string) int64 {
 	if err != nil {
 		log.Fatal("Could not open file to check punishments.")
 	}
+
 	scanner := bufio.NewScanner(f)
+
 	var lines []string
+
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
+
 	timeWritten, _ := strconv.ParseInt(lines[1], 10, 64)
+
 	return timeWritten
 }
 
@@ -80,6 +85,7 @@ func punishUser(s *discordgo.Session, msg *discordgo.Message) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		time := strconv.FormatInt(time.Now().Unix(), 16)
 		if _, err := f.Write([]byte("1" + "\n" + time)); err != nil {
 			f.Close() // ignore error; Write error takes precedence
@@ -161,6 +167,7 @@ func findMessageCollisions(s *discordgo.Session, m *discordgo.Message) bool {
 			fmt.Println(err)
 			return false
 		}
+
 		scanner := bufio.NewScanner(file)
 		hashedMessage := getFNV128Hash(m.Content)
 		for scanner.Scan() {
@@ -180,12 +187,16 @@ func findMessageCollisions(s *discordgo.Session, m *discordgo.Message) bool {
 
 func resumePunishment(userid string, banTime int64, s *discordgo.Session) {
 	defer wg.Done()
+
 	err := s.GuildMemberRoleAdd(cfg.Discord.TargetGuild, userid, cfg.Discord.MuteRoleID)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	toSleep := time.Duration(banTime - time.Now().Unix())
+
 	time.Sleep(toSleep * time.Second)
+
 	err = s.GuildMemberRoleRemove(cfg.Discord.TargetGuild, userid, cfg.Discord.MuteRoleID)
 	if err != nil {
 		fmt.Println(err)
@@ -194,6 +205,7 @@ func resumePunishment(userid string, banTime int64, s *discordgo.Session) {
 
 func removeRoleGoroutine(userid string, s *discordgo.Session) {
 	defer wg.Done()
+
 	err := s.GuildMemberRoleRemove(cfg.Discord.TargetGuild, userid, cfg.Discord.MuteRoleID)
 	if err != nil {
 		fmt.Println(err)
@@ -219,17 +231,17 @@ func readyEvent(s *discordgo.Session, m *discordgo.Ready) {
 }
 
 func init() {
-	fileReader, err := os.Open("config.json")
+	f, err := os.Open("config.json")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer fileReader.Close()
-	fileBytes, err := ioutil.ReadAll(fileReader)
+	defer f.Close()
+	fb, err := ioutil.ReadAll(f)
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		json.Unmarshal(fileBytes, &cfg)
 	}
+
+	json.Unmarshal(fb, &cfg)
 
 	if _, err := os.Stat("db"); os.IsNotExist(err) {
 		err = os.MkdirAll("db", 0740)
@@ -237,6 +249,7 @@ func init() {
 			log.Fatal(err)
 		}
 	}
+
 	if _, err := os.Stat("db/punishments"); os.IsNotExist(err) {
 		err = os.MkdirAll("db/punishments", 0740)
 		if err != nil {
@@ -246,15 +259,15 @@ func init() {
 }
 
 func main() {
-	dg, err := discordgo.New("Bot " + cfg.Discord.Token)
+	c, err := discordgo.New("Bot " + cfg.Discord.Token)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	dg.AddHandler(messageCreate)
-	dg.AddHandler(readyEvent)
+	c.AddHandler(messageCreate)
+	c.AddHandler(readyEvent)
 
-	err = dg.Open()
+	err = c.Open()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -262,5 +275,5 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
 	<-sc
-	dg.Close()
+	c.Close()
 }
